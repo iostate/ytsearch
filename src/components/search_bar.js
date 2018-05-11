@@ -28,7 +28,7 @@ class SearchBar extends Component {
 	onInputChange(term) {
 		// update this.state's term property
 		this.setState({term});
-		// research YouTube with the new term
+		// search YouTube with the new term
 		this.props.onSearchTermChange(term);
 	}
 }
