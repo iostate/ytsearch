@@ -6,12 +6,13 @@ class SearchBar extends Component {
 		super(props);
 
 		// update this from the input
-		this.state = { term: 'Placeholder' }; 
+		this.state = { term: '' }; 
 	}
+
+
 	render() {
 		return (
 			<div>
-
 			{/* Change State using only setState({}) */}
 				<input 
 					value={this.state.term}
@@ -21,9 +22,7 @@ class SearchBar extends Component {
 						});
 						console.log(event.target.value);
 				}}
-				
 				/>
-				Value of the input: {this.state.term}
 			</div>
 		); 
 	}
