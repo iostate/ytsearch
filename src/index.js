@@ -20,31 +20,47 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+
     this.state = { 
-      videos: [],
-      selectedVideo: null
+      videos: [], // empty array of videos to be populated with YTSearch
+      selectedVideo: null // selectedVideo will render the video in the Video Player
      };
-    
-    // Search YT w/ 'surfboards' query
-    // then set this.state.videos equal to what comes in
-    YTSearch({
-      key: API_KEY,
-      term: 'surfboards'
-    }, (videos) => {
+    //  Initialize YTSearch term to 'surfboards'
+     this.videoSearch('surfboards');
+  }
+
+  /**
+      Search the YouTube API w/ any term, use the videos response 
+      from the YouTube API to set the state.videos
+      property, amd also to initialize the selectedVideo as the first index of the videos. 
+     */
+  videoSearch(term) { 
+    YTSearch({key: API_KEY, term: term }, (videos) => {
       // when the name of the data and the state property is the same
       // simply use the name of either
       this.setState({
         videos: videos,
-        selectedVideo: videos[0]  
+        selectedVideo: videos[0]
       }); 
     });
+
   }
 
   render() {
     return (
       <div>
-        <SearchBar />
+        {/* 
+          onSearchTermChange will automatically render a new search
+          through YouTube Search, it will also update state.videos & state.SelectedVideo 
+        */}
+        <SearchBar onSearchTermChange={term => this.videoSearch(term)} />
+        {/* 
+          Initialize the VideoDetail with the first video from the YTSearch. 
+          Any onClicks to videos in the VideoList will automatically rerender this component 
+        */}
         <VideoDetail video={this.state.selectedVideo} />
+        {/* onVideoSelect() in VideosList allows us to update VideoDetail component
+            since calls to setState() automatically rerenders the VideoDetail component */}
         <VideoList 
           onVideoSelect={selectedVideo => this.setState({selectedVideo})}
           videos={this.state.videos} />
@@ -52,11 +68,7 @@ class App extends Component {
     );
   }
 }
-// ReactDOM.render(
-//   <Provider store={createStoreWithMiddleware(reducers)}>
-//     <App />
-//   </Provider>
-//   , document.querySelector('.container'));
+
 ReactDOM.render(
   // <Provider store={createStoreWithMiddleware(reducers)}>
     <App />

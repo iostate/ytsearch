@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 class SearchBar extends Component {
-
 	constructor(props) {
 		super(props);
 
@@ -12,26 +11,26 @@ class SearchBar extends Component {
 
 	render() {
 		return (
-			<div>
+			<div className="search-bar">
 			{/* Change State using only setState({}) */}
 				<input 
 					value={this.state.term}
-					onChange={ event => {
-						this.setState({
-							term: event.target.value
-						});
-						console.log(event.target.value);
-				}}
-				/>
+					// onChange emits an event, and we can send the
+					// event.target.value to the onInputChange() fn
+					// in order to update the state and to send
+					// the term to onSearchTermChange() in order to rerender 
+					// the new results
+					onChange={ event => this.onInputChange(event.target.value)} />
 			</div>
 		); 
 	}
 
-	// made the onChange more concise by making a fat arrow function
-	// on the input HTML tag
-
-	// all HTML events have native properties associated to it
-	// like even
+	onInputChange(term) {
+		// update this.state's term property
+		this.setState({term});
+		// research YouTube with the new term
+		this.props.onSearchTermChange(term);
+	}
 }
 
 export default SearchBar;
