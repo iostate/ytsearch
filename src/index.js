@@ -1,29 +1,30 @@
+import _ from 'lodash'; // used for throttling the searches
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import YTSearch from 'youtube-api-search';
-import SearchBar from './components/search_bar';
-import VideoList from './components/video_list';
-import VideoDetail from './components/video_detail';
+import YTSearch from 'youtube-api-search'; // the YouTube API Search
+import SearchBar from './components/search_bar'; // Search Bar Component that lets us search YT data
+import VideoList from './components/video_list'; // Renders a list of Videos
+import VideoDetail from './components/video_detail'; // Renders the details of videos within the VideoList component
 
+// API key for YouTube Search
+const API_KEY = 'AIzaSyAi-0d84t5z3ewvHms9alUaYjRuo_YfQBE';
+
+/*
+// Currently not being used until redux is implemented
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-
-
-import reducers from './reducers';
-
-// import App from './components/app';
-
-const API_KEY = 'AIzaSyAi-0d84t5z3ewvHms9alUaYjRuo_YfQBE';
+import reducers from './reducers'; 
 const createStoreWithMiddleware = applyMiddleware()(createStore);
+*/
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-
     this.state = { 
-      videos: [], // empty array of videos to be populated with YTSearch
-      selectedVideo: null // selectedVideo will render the video in the Video Player
+      videos: [], // empty array of videos to be populated with videoSearch() fn
+      selectedVideo: null // selectedVideo will render the 1st video of the videos
+                          // returned by videoSearch() fn
      };
     //  Initialize YTSearch term to 'surfboards'
      this.videoSearch('surfboards');
@@ -43,17 +44,17 @@ class App extends Component {
         selectedVideo: videos[0]
       }); 
     });
-
   }
 
   render() {
+    // throttle the video searches
+    const videoSearch = _.debounce((term) => { this.videoSearch(term) }, 300);
+    
     return (
       <div>
-        {/* 
-          onSearchTermChange will automatically render a new search
-          through YouTube Search, it will also update state.videos & state.SelectedVideo 
-        */}
-        <SearchBar onSearchTermChange={term => this.videoSearch(term)} />
+        
+        {/* The onSearchTermChange is throttled by lodash, by 300ms */}
+        <SearchBar onSearchTermChange={videoSearch} />
         {/* 
           Initialize the VideoDetail with the first video from the YTSearch. 
           Any onClicks to videos in the VideoList will automatically rerender this component 
@@ -70,6 +71,7 @@ class App extends Component {
 }
 
 ReactDOM.render(
+  // Provider currently not being used until Redux is implemented
   // <Provider store={createStoreWithMiddleware(reducers)}>
     <App />
   // </Provider>
